@@ -305,6 +305,7 @@ export const useChatStore = createPersistStore(
       },
 
       newSession(mask?: Mask) {
+        console.log("newSession");
         const session = createEmptySession();
 
         if (mask) {
@@ -319,6 +320,16 @@ export const useChatStore = createPersistStore(
             },
           };
           session.topic = mask.name;
+        } else {
+          const accessStore = useAccessStore.getState();
+          if (accessStore.useCustomConfig && accessStore.defaultModel) {
+            session.mask.modelConfig.model = accessStore.defaultModel;
+            session.mask.modelConfig.providerName =
+              accessStore.defaultModel as ServiceProvider;
+            session.mask.syncGlobalConfig = false;
+          } else {
+            console.warn("123123123123");
+          }
         }
 
         set((state) => ({
@@ -387,7 +398,8 @@ export const useChatStore = createPersistStore(
         }
 
         const session = sessions[index];
-
+        console.log("currentSession", session.mask.modelConfig);
+        console.trace();
         return session;
       },
 
